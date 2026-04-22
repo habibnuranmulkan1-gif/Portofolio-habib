@@ -31,7 +31,7 @@ const App = () => {
       { 
         nama: "RED DEVIL ANALYTICS", 
         desc: "Dashboard visualisasi data real-time untuk analisis taktis.",
-        link: "h" 
+        link: "https://github.com/habibnuranmulkan1-gif/Portofolio-habib" 
       }
     ],
     kontak: {
@@ -64,8 +64,8 @@ const App = () => {
         <h1 className="text-xl font-black italic tracking-tighter text-red-600">MU.DEV</h1>
         <div className="flex gap-6 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-700">
           <a href="#home" className="hover:text-red-600 transition underline-offset-8 hover:underline">Home</a>
-          <a href="#skills" className="hover:text-red-600 transition underline-offset-8 hover:underline">Tactics</a>
-          <a href="#projects" className="hover:text-red-600 transition underline-offset-8 hover:underline">Squad</a>
+          <a href="#skills" className="hover:text-red-600 transition underline-offset-8 hover:underline">Skill</a>
+          <a href="#projects" className="hover:text-red-600 transition underline-offset-8 hover:underline">Project</a>
           <a href="#contact" className="hover:text-red-600 transition underline-offset-8 hover:underline">Contact</a>
         </div>
       </nav>
@@ -94,7 +94,7 @@ const App = () => {
 
       <section id="skills" className="py-24 px-6 bg-slate-50">
         <div className="max-w-5xl mx-auto text-center">
-          <h3 className="text-gray-400 font-bold uppercase tracking-[0.5em] text-[10px] mb-12 font-black">The Tactical Stack</h3>
+          <h3 className="text-gray-400 font-bold uppercase tracking-[0.5em] text-[10px] mb-12 font-black">my skills</h3>
           <div className="flex flex-wrap justify-center gap-4">
             {data.skills.map((skill, i) => (
               <div key={i} className="px-10 py-4 bg-white border-2 border-gray-100 rounded-2xl hover:border-red-600 hover:text-red-600 hover:-rotate-2 transition-all duration-300 cursor-default font-black uppercase text-sm tracking-tighter shadow-sm hover:shadow-md">
@@ -129,7 +129,7 @@ const App = () => {
       <footer id="contact" className="py-32 bg-gray-950 text-white px-6 text-center relative">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-1 bg-red-600"></div>
         <h3 className="text-6xl font-black uppercase italic mb-12 tracking-tighter leading-none">
-          Sign for the <span className="text-red-600">Squad</span>
+          Sign for the <span className="text-red-600">Project</span>
         </h3>
         <div className="flex flex-wrap justify-center gap-10">
           <a 
