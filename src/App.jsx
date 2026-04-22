@@ -33,11 +33,11 @@ const App = () => {
       { 
         nama: "RED DEVIL ANALYTICS", 
         desc: "Dashboard visualisasi data real-time untuk analisis taktis.",
-        link: "https://github.com/habibnuran" 
+        link: "https://github.com/habibnuranmulkan1-gif/Portofolio-habib" 
       }
     ],
     kontak: {
-      github: "https://github.com/habibnuranmulkan1-gif", 
+      github: "https://github.com/habibnuranmulkan1-gif/Portofolio-habib", 
       email: "habibnuran@example.com" 
     }
   };
