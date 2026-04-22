@@ -29,17 +29,16 @@ const App = () => {
       { 
         nama: "THEATER OF DREAMS", 
         desc: "Sistem manajemen web berperforma tinggi dengan antarmuka modern.",
-        link: "https://github.com/habibnuran" // Ganti dengan link projectmu
-      },
+        link: "https://github.com/habibnuranmulkan1-gif/Portofolio-habib" 
       { 
         nama: "RED DEVIL ANALYTICS", 
         desc: "Dashboard visualisasi data real-time untuk analisis taktis.",
-        link: "https://github.com/habibnuran" // Ganti dengan link projectmu
+        link: "https://github.com/habibnuran" 
       }
     ],
     kontak: {
-      github: "https://github.com/habibnuran", // GANTI DENGAN LINK GITHUB ASLIMU
-      email: "habibnuran@example.com" // GANTI DENGAN EMAIL ASLIMU
+      github: "https://github.com/habibnuranmulkan1-gif", 
+      email: "habibnuran@example.com" 
     }
   };
 
