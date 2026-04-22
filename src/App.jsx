@@ -20,7 +20,7 @@ const App = () => {
   const data = {
     nama: "Habib Nuran Mulkan",
     role: "THE KING OF MANCHESTER | WEB DEVELOPER",
-    tentang: "Membangun sistem dengan presisi taktik Sir Alex Ferguson dan agresivitas serangan balik era Treble Winner. Fokus pada performa tinggi dan mentalitas juara di setiap baris kode.",
+    tentang: "Membangun sistem dengan presisi taktik Sir Alex Ferguson dan agresivitas serangan balik era Treble Winner. Fokus pada performa tinggi dan mentalitas juara di setiap baris kode." + " Nama saya Habib Nuran Mulkan, hobi saya nonton film dan tidur, saya tinggal di rukoh, cita-cita saya ingin menjadi orang kaya",
     skills: ["HTML", "CSS", "JavaScript", "React", "Tailwind", "Git", "UI Design"],
     projects: [
       { 
