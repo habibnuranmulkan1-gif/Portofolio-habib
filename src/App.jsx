@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { motion } from 'framer-motion';
-import { MessageSquare, Send, User, Calculator, Github, Mail } from 'lucide-react';
+import { MessageSquare, Send, User, Calculator, github, Mail } from 'lucide-react';
 import profileImg from './assets/img.jpg'; 
 
 // KONFIGURASI SUPABASE
