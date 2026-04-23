@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
+import { motion } from 'framer-motion';
+import { MessageSquare, Send, User, Calculator, Github, Mail } from 'lucide-react';
 import profileImg from './assets/img.jpg'; 
+
+// KONFIGURASI SUPABASE
+const supabase = createClient('https://wfqorweuuihqagnjhnlf.supabase.co', 'sb_publishable_kTRGKTrHgKuiac8RN1RkeA_kMdxWfxJ');
 
 const App = () => {
   const [emojis, setEmojis] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [commentData, setCommentData] = useState({ name: '', content: '' });
 
+  // Handle Emoji interaction
   const handleInteraction = (e) => {
     const newEmoji = {
       id: Date.now(),
@@ -17,22 +26,47 @@ const App = () => {
     }, 1000);
   };
 
+  // FETCH COMMENTS
+  useEffect(() => {
+    fetchComments();
+  }, []);
+
+  const fetchComments = async () => {
+    const { data } = await supabase
+      .from('comments')
+      .select('*')
+      .order('created_at', { ascending: false });
+    setComments(data || []);
+  };
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!commentData.name || !commentData.content) return;
+    
+    const { error } = await supabase.from('comments').insert([commentData]);
+    if (!error) {
+      setCommentData({ name: '', content: '' });
+      fetchComments();
+    }
+  };
+
   const data = {
     nama: "Habib Nuran Mulkan",
     role: "THE KING OF MANCHESTER | WEB DEVELOPER",
     tentang: "Membangun sistem dengan presisi taktik Sir Alex Ferguson dan agresivitas serangan balik era Treble Winner. Nama saya Habib Nuran Mulkan, hobi saya nonton film dan tidur, saya tinggal di rukoh, cita-cita saya ingin menjadi orang kaya",
-    skills: ["HTML", "CSS", "JavaScript", "React", "Tailwind", "Git", "UI Design"],
+    skills: ["HTML", "CSS", "JavaScript", "React", "Tailwind", "Git", "Supabase", "Framer Motion"],
     projects: [
+      { 
+        nama: "SCIENTIFIC CALCULATOR", 
+        desc: "Kalkulator kompleks dengan desain glassmorphism yang interaktif.",
+        link: "https://scientific-calculator-mybr.vercel.app/",
+        isSpecial: true
+      },
       { 
         nama: "THEATER OF DREAMS", 
         desc: "Sistem manajemen web berperforma tinggi dengan antarmuka modern.",
         link: "https://github.com/habibnuranmulkan1-gif/Portofolio-habib" 
-      }, // <-- Tadi di sini kurang tutup kurung kurawal
-      { 
-        nama: "RED DEVIL ANALYTICS", 
-        desc: "Dashboard visualisasi data real-time untuk analisis taktis.",
-        link: "https://github.com/habibnuranmulkan1-gif/Portofolio-habib" 
-      }
+      },
     ],
     kontak: {
       github: "https://github.com/habibnuranmulkan1-gif/Portofolio-habib", 
@@ -45,14 +79,14 @@ const App = () => {
       onClick={handleInteraction}
       className="bg-white text-slate-900 min-h-screen font-sans selection:bg-red-600 selection:text-white overflow-x-hidden scroll-smooth"
     >
+      {/* Emoji Particles */}
       {emojis.map((em) => (
         <span
           key={em.id}
-          className="fixed pointer-events-none animate-bounce text-2xl z-[9999]"
+          className="fixed pointer-events-none text-2xl z-[9999]"
           style={{ 
             left: em.x - 10, 
             top: em.y - 10, 
-            transition: 'all 1s ease-out',
             animation: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite'
           }}
         >
@@ -60,52 +94,38 @@ const App = () => {
         </span>
       ))}
 
+      {/* Navigation */}
       <nav className="fixed top-5 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl bg-white/70 backdrop-blur-xl border border-gray-200 p-4 rounded-3xl flex justify-between items-center z-50 shadow-xl">
         <h1 className="text-xl font-black italic tracking-tighter text-red-600">MU.DEV</h1>
         <div className="flex gap-6 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-700">
-          <a href="#home" className="hover:text-red-600 transition underline-offset-8 hover:underline">Home</a>
-          <a href="#skills" className="hover:text-red-600 transition underline-offset-8 hover:underline">Skill</a>
-          <a href="#projects" className="hover:text-red-600 transition underline-offset-8 hover:underline">Project</a>
-          <a href="#contact" className="hover:text-red-600 transition underline-offset-8 hover:underline">Contact</a>
+          <a href="#home" className="hover:text-red-600 transition">Home</a>
+          <a href="#projects" className="hover:text-red-600 transition">Project</a>
+          <a href="#guestbook" className="hover:text-red-600 transition">Guestbook</a>
         </div>
       </nav>
 
+      {/* Hero Section */}
       <section id="home" className="pt-48 pb-20 px-6 text-center min-h-screen flex flex-col items-center">
-        <div className="relative inline-block mb-12 group cursor-pointer">
+        <div className="relative inline-block mb-12 group">
           <div className="absolute -inset-4 bg-red-500/20 rounded-full blur-2xl group-hover:bg-red-500/40 transition duration-700"></div>
           <img 
             src={profileImg} 
             alt={data.nama} 
-            className="relative w-48 h-48 rounded-full object-cover border-8 border-white shadow-2xl transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105"
+            className="relative w-48 h-48 rounded-full object-cover border-8 border-white shadow-2xl transition-transform duration-500 group-hover:scale-105"
           />
-          <div className="absolute -bottom-2 -right-2 bg-red-600 text-white p-3 rounded-full shadow-lg font-black italic text-xs uppercase">King</div>
+          <div className="absolute -bottom-2 -right-2 bg-red-600 text-white p-3 rounded-full shadow-lg font-black italic text-xs">KING</div>
         </div>
-        <h2 className="text-6xl md:text-8xl font-black uppercase italic tracking-tighter mb-4 bg-gradient-to-b from-gray-950 to-gray-600 bg-clip-text text-transparent leading-none">
+        <h2 className="text-6xl md:text-8xl font-black uppercase italic tracking-tighter mb-4 bg-gradient-to-b from-gray-950 to-gray-600 bg-clip-text text-transparent">
           {data.nama}
         </h2>
         <p className="text-red-600 font-black tracking-[0.4em] uppercase text-[11px] mb-10">{data.role}</p>
-        <div className="max-w-2xl mx-auto text-gray-700 leading-relaxed italic text-lg bg-red-50/50 p-8 rounded-[2rem] border border-red-100 backdrop-blur-sm shadow-inner transition-all hover:shadow-lg">
+        <div className="max-w-2xl mx-auto text-gray-700 italic text-lg bg-red-50/50 p-8 rounded-[2rem] border border-red-100 shadow-inner">
           "{data.tentang}"
         </div>
-        <a href="#projects" className="mt-12 px-10 py-4 bg-red-600 text-white font-black uppercase tracking-widest rounded-full hover:bg-black hover:-translate-y-2 transition-all duration-300 shadow-xl shadow-red-200">
-          Explore Matches →
-        </a>
       </section>
 
-      <section id="skills" className="py-24 px-6 bg-slate-50">
-        <div className="max-w-5xl mx-auto text-center">
-          <h3 className="text-gray-400 font-bold uppercase tracking-[0.5em] text-[10px] mb-12 font-black">my skills</h3>
-          <div className="flex flex-wrap justify-center gap-4">
-            {data.skills.map((skill, i) => (
-              <div key={i} className="px-10 py-4 bg-white border-2 border-gray-100 rounded-2xl hover:border-red-600 hover:text-red-600 hover:-rotate-2 transition-all duration-300 cursor-default font-black uppercase text-sm tracking-tighter shadow-sm hover:shadow-md">
-                {skill}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="projects" className="py-32 px-6 bg-white">
+      {/* Projects Section */}
+      <section id="projects" className="py-32 px-6 bg-slate-50">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-6 mb-20">
             <div className="h-1 w-20 bg-red-600"></div>
@@ -113,12 +133,16 @@ const App = () => {
           </div>
           <div className="grid md:grid-cols-2 gap-12">
             {data.projects.map((p, i) => (
-              <div key={i} className="group relative p-12 bg-white border-b-8 border-gray-100 rounded-3xl hover:border-red-600 hover:-translate-y-4 transition-all duration-500 shadow-xl overflow-hidden border border-gray-50">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full -mr-16 -mt-16 group-hover:bg-red-600 transition-colors duration-500"></div>
-                <h4 className="relative z-10 text-3xl font-black mb-6 group-hover:text-red-600 transition-colors uppercase italic tracking-tighter leading-none">{p.nama}</h4>
-                <p className="relative z-10 text-gray-500 mb-10 leading-relaxed font-medium">{p.desc}</p>
-                <a href={p.link} target="_blank" rel="noreferrer" className="relative z-10 inline-block px-8 py-3 border-2 border-red-600 text-red-600 font-black uppercase text-[10px] tracking-widest rounded-full hover:bg-red-600 hover:text-white transition-all">
-                  View Project
+              <div key={i} className={`group relative p-12 rounded-3xl transition-all duration-500 shadow-xl border ${p.isSpecial ? 'bg-gray-900 text-white border-red-600' : 'bg-white border-gray-100 text-slate-900'}`}>
+                <h4 className="text-3xl font-black mb-6 uppercase italic tracking-tighter">{p.nama}</h4>
+                <p className={`mb-10 font-medium ${p.isSpecial ? 'text-gray-400' : 'text-gray-500'}`}>{p.desc}</p>
+                <a 
+                  href={p.link} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className={`inline-flex items-center gap-2 px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest transition-all ${p.isSpecial ? 'bg-red-600 text-white hover:bg-white hover:text-red-600' : 'border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white'}`}
+                >
+                  {p.isSpecial && <Calculator size={14}/>} {p.isSpecial ? 'Open Calculator' : 'View Project'}
                 </a>
               </div>
             ))}
@@ -126,38 +150,69 @@ const App = () => {
         </div>
       </section>
 
-      <footer id="contact" className="py-32 bg-gray-950 text-white px-6 text-center relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-1 bg-red-600"></div>
-        <h3 className="text-6xl font-black uppercase italic mb-12 tracking-tighter leading-none">
-          Sign for the <span className="text-red-600">Project</span>
-        </h3>
-        <div className="flex flex-wrap justify-center gap-10">
-          <a 
-            href={data.kontak.github} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group flex flex-col items-center cursor-pointer"
-          >
-            <span className="w-20 h-20 flex items-center justify-center bg-white/10 rounded-full group-hover:bg-red-600 transition-all duration-300 text-2xl mb-4 italic font-black shadow-lg">
-              GH
-            </span>
-            <span className="text-[10px] font-black uppercase tracking-widest opacity-50">GitHub</span>
-          </a>
-          <div 
-            onClick={() => alert(`Silahkan hubungi Habib di: ${data.kontak.email}`)} 
-            className="group flex flex-col items-center cursor-pointer"
-          >
-            <span className="w-20 h-20 flex items-center justify-center bg-white/10 rounded-full group-hover:bg-red-600 transition-all duration-300 text-2xl mb-4 italic font-black shadow-lg">
-              EM
-            </span>
-            <span className="text-[10px] font-black uppercase tracking-widest opacity-50">Email</span>
+      {/* COMMENT / GUESTBOOK SECTION */}
+      <section id="guestbook" className="py-32 px-6 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-black uppercase italic tracking-tighter">Fans Message & Funfacts</h3>
+            <p className="text-gray-500 uppercase tracking-widest text-[10px] mt-2">Leave a trace like a Red Devil</p>
+          </div>
+
+          <form onSubmit={handleCommentSubmit} className="mb-16 space-y-4 bg-slate-50 p-8 rounded-[2.5rem] border border-gray-200 shadow-sm">
+            <div className="flex items-center gap-3 bg-white p-3 rounded-2xl border border-gray-200">
+              <User className="text-red-600" size={20}/>
+              <input 
+                className="w-full bg-transparent outline-none font-bold text-sm"
+                placeholder="Your Name"
+                value={commentData.name}
+                onChange={(e) => setCommentData({...commentData, name: e.target.value})}
+              />
+            </div>
+            <div className="bg-white p-3 rounded-2xl border border-gray-200">
+              <textarea 
+                className="w-full bg-transparent outline-none text-sm h-32 resize-none"
+                placeholder="Share a funfact or ask something..."
+                value={commentData.content}
+                onChange={(e) => setCommentData({...commentData, content: e.target.value})}
+              />
+            </div>
+            <button className="w-full py-4 bg-red-600 text-white font-black uppercase tracking-widest rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-3">
+              Send Message <Send size={18}/>
+            </button>
+          </form>
+
+          <div className="space-y-6 max-h-[600px] overflow-y-auto pr-4 custom-scrollbar">
+            {comments.map((c) => (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                key={c.id} 
+                className="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-md transition-shadow border-l-8 border-l-red-600"
+              >
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-black italic text-red-600 uppercase text-sm tracking-tight">{c.name}</span>
+                  <span className="text-[9px] text-gray-400 font-bold uppercase">{new Date(c.created_at).toLocaleDateString()}</span>
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed">{c.content}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
-        <div className="mt-32 pt-10 border-t border-white/5">
-          <p className="text-[10px] font-black tracking-[1em] text-gray-500 uppercase italic">
-            Glory Glory Manchester United &copy; 2026 | {data.nama}
-          </p>
+      </section>
+
+      {/* Footer */}
+      <footer id="contact" className="py-20 bg-gray-950 text-white px-6 text-center">
+        <div className="flex justify-center gap-10 mb-10">
+          <a href={data.kontak.github} target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors">
+            <Github size={32}/>
+          </a>
+          <a href={`mailto:${data.kontak.email}`} className="hover:text-red-600 transition-colors">
+            <Mail size={32}/>
+          </a>
         </div>
+        <p className="text-[10px] font-black tracking-[1em] text-gray-500 uppercase italic">
+          Glory Glory Manchester United &copy; 2026 | {data.nama}
+        </p>
       </footer>
     </div>
   );
