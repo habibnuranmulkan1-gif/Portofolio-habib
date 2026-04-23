@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { motion } from 'framer-motion';
+// PERBAIKAN: Pastikan namanya "Github" dengan G kapital tunggal
 import { MessageSquare, Send, User, Calculator, Github, Mail } from 'lucide-react';
 import profileImg from './assets/img.jpg'; 
 
-// KONFIGURASI SUPABASE
+// KONFIGURASI SUPABASE (Data kamu sudah saya masukkan kembali)
 const supabase = createClient('https://wfqorweuuihqagnjhnlf.supabase.co', 'sb_publishable_kTRGKTrHgKuiac8RN1RkeA_kMdxWfxJ');
 
 const App = () => {
@@ -32,11 +33,15 @@ const App = () => {
   }, []);
 
   const fetchComments = async () => {
-    const { data } = await supabase
-      .from('comments')
-      .select('*')
-      .order('created_at', { ascending: false });
-    setComments(data || []);
+    try {
+      const { data } = await supabase
+        .from('comments')
+        .select('*')
+        .order('created_at', { ascending: false });
+      setComments(data || []);
+    } catch (err) {
+      console.error("Error fetching comments:", err);
+    }
   };
 
   const handleCommentSubmit = async (e) => {
@@ -47,6 +52,8 @@ const App = () => {
     if (!error) {
       setCommentData({ name: '', content: '' });
       fetchComments();
+    } else {
+      alert("Gagal mengirim komentar. Pastikan tabel 'comments' sudah ada di Supabase.");
     }
   };
 
@@ -115,7 +122,7 @@ const App = () => {
           />
           <div className="absolute -bottom-2 -right-2 bg-red-600 text-white p-3 rounded-full shadow-lg font-black italic text-xs">KING</div>
         </div>
-        <h2 className="text-6xl md:text-8xl font-black uppercase italic tracking-tighter mb-4 bg-gradient-to-b from-gray-950 to-gray-600 bg-clip-text text-transparent">
+        <h2 className="text-6xl md:text-8xl font-black uppercase italic tracking-tighter mb-4 bg-gradient-to-b from-gray-950 to-gray-600 bg-clip-text text-transparent leading-none">
           {data.nama}
         </h2>
         <p className="text-red-600 font-black tracking-[0.4em] uppercase text-[11px] mb-10">{data.role}</p>
@@ -134,7 +141,7 @@ const App = () => {
           <div className="grid md:grid-cols-2 gap-12">
             {data.projects.map((p, i) => (
               <div key={i} className={`group relative p-12 rounded-3xl transition-all duration-500 shadow-xl border ${p.isSpecial ? 'bg-gray-900 text-white border-red-600' : 'bg-white border-gray-100 text-slate-900'}`}>
-                <h4 className="text-3xl font-black mb-6 uppercase italic tracking-tighter">{p.nama}</h4>
+                <h4 className="text-3xl font-black mb-6 uppercase italic tracking-tighter leading-none">{p.nama}</h4>
                 <p className={`mb-10 font-medium ${p.isSpecial ? 'text-gray-400' : 'text-gray-500'}`}>{p.desc}</p>
                 <a 
                   href={p.link} 
@@ -154,7 +161,7 @@ const App = () => {
       <section id="guestbook" className="py-32 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
-            <h3 className="text-4xl font-black uppercase italic tracking-tighter">Fans Message & Funfacts</h3>
+            <h3 className="text-4xl font-black uppercase italic tracking-tighter leading-none">Fans Message & Funfacts</h3>
             <p className="text-gray-500 uppercase tracking-widest text-[10px] mt-2">Leave a trace like a Red Devil</p>
           </div>
 
@@ -176,12 +183,12 @@ const App = () => {
                 onChange={(e) => setCommentData({...commentData, content: e.target.value})}
               />
             </div>
-            <button className="w-full py-4 bg-red-600 text-white font-black uppercase tracking-widest rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-3">
+            <button className="w-full py-4 bg-red-600 text-white font-black uppercase tracking-widest rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-3 shadow-lg shadow-red-200">
               Send Message <Send size={18}/>
             </button>
           </form>
 
-          <div className="space-y-6 max-h-[600px] overflow-y-auto pr-4 custom-scrollbar">
+          <div className="space-y-6 max-h-[600px] overflow-y-auto pr-4">
             {comments.map((c) => (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
@@ -206,13 +213,15 @@ const App = () => {
           <a href={data.kontak.github} target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors">
             <Github size={32}/>
           </a>
-          <a href={`mailto:${data.kontak.email}`} className="hover:text-red-600 transition-colors">
+          <div onClick={() => alert(`Contact: ${data.kontak.email}`)} className="hover:text-red-600 transition-colors cursor-pointer">
             <Mail size={32}/>
-          </a>
+          </div>
         </div>
-        <p className="text-[10px] font-black tracking-[1em] text-gray-500 uppercase italic">
-          Glory Glory Manchester United &copy; 2026 | {data.nama}
-        </p>
+        <div className="mt-10 pt-10 border-t border-white/5">
+          <p className="text-[10px] font-black tracking-[1em] text-gray-500 uppercase italic">
+            Glory Glory Manchester United &copy; 2026 | {data.nama}
+          </p>
+        </div>
       </footer>
     </div>
   );
