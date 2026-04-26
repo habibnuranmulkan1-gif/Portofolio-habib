@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { motion } from 'framer-motion';
-// PERBAIKAN: Pastikan namanya "Github" dengan G kapital tunggal
-import { MessageSquare, Send, User, Calculator, Github, Mail } from 'lucide-react';
+import { MessageSquare, Send, User, Calculator, Mail, Code as Github } from 'lucide-react';
 import profileImg from './assets/img.jpg'; 
 
-// KONFIGURASI SUPABASE (Data kamu sudah saya masukkan kembali)
+// KONFIGURASI SUPABASE
 const supabase = createClient('https://wfqorweuuihqagnjhnlf.supabase.co', 'sb_publishable_kTRGKTrHgKuiac8RN1RkeA_kMdxWfxJ');
 
 const App = () => {
@@ -13,7 +12,7 @@ const App = () => {
   const [comments, setComments] = useState([]);
   const [commentData, setCommentData] = useState({ name: '', content: '' });
 
-  // Handle Emoji interaction
+  // Handle Emoji interaction (Efek klik layar)
   const handleInteraction = (e) => {
     const newEmoji = {
       id: Date.now(),
@@ -27,20 +26,22 @@ const App = () => {
     }, 1000);
   };
 
-  // FETCH COMMENTS
+  // Fetch komentar saat aplikasi dimuat
   useEffect(() => {
     fetchComments();
   }, []);
 
   const fetchComments = async () => {
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('comments')
         .select('*')
         .order('created_at', { ascending: false });
+      
+      if (error) throw error;
       setComments(data || []);
     } catch (err) {
-      console.error("Error fetching comments:", err);
+      console.error("Error fetching comments:", err.message);
     }
   };
 
@@ -48,12 +49,15 @@ const App = () => {
     e.preventDefault();
     if (!commentData.name || !commentData.content) return;
     
-    const { error } = await supabase.from('comments').insert([commentData]);
-    if (!error) {
+    try {
+      const { error } = await supabase.from('comments').insert([commentData]);
+      if (error) throw error;
+
       setCommentData({ name: '', content: '' });
       fetchComments();
-    } else {
-      alert("Gagal mengirim komentar. Pastikan tabel 'comments' sudah ada di Supabase.");
+    } catch (err) {
+      console.error("Submit error:", err.message);
+      alert("Gagal kirim komentar. Pastikan tabel 'comments' sudah di-set PUBLIC di Supabase.");
     }
   };
 
@@ -157,7 +161,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* COMMENT / GUESTBOOK SECTION */}
+      {/* Guestbook Section */}
       <section id="guestbook" className="py-32 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
@@ -178,18 +182,18 @@ const App = () => {
             <div className="bg-white p-3 rounded-2xl border border-gray-200">
               <textarea 
                 className="w-full bg-transparent outline-none text-sm h-32 resize-none"
-                placeholder="Share a funfact or ask something..."
+                placeholder="Share a funfact atau sekedar tanya-tanya..."
                 value={commentData.content}
                 onChange={(e) => setCommentData({...commentData, content: e.target.value})}
               />
             </div>
-            <button className="w-full py-4 bg-red-600 text-white font-black uppercase tracking-widest rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-3 shadow-lg shadow-red-200">
+            <button type="submit" className="w-full py-4 bg-red-600 text-white font-black uppercase tracking-widest rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-3 shadow-lg shadow-red-200">
               Send Message <Send size={18}/>
             </button>
           </form>
 
           <div className="space-y-6 max-h-[600px] overflow-y-auto pr-4">
-            {comments.map((c) => (
+            {comments.length > 0 ? comments.map((c) => (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -202,7 +206,9 @@ const App = () => {
                 </div>
                 <p className="text-gray-700 text-sm leading-relaxed">{c.content}</p>
               </motion.div>
-            ))}
+            )) : (
+              <p className="text-center text-gray-400 italic text-sm">Belum ada komentar. Jadilah yang pertama!</p>
+            )}
           </div>
         </div>
       </section>
